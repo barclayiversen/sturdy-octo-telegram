@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import firebase from 'firebase';
-import { Header } from './components/common';
+import { Header, Button } from './components/common';
 import LoginForm from './components/LoginForm';
 
 class App extends Component {
+	state = { loggedIn: null };
+	
 	componentWillMount() {
+		console.log('dafawk: ',this.state.loggedIn)
 		firebase.initializeApp({
 			apiKey: 'AIzaSyBGZwfaxtctp1o1jHQFP5LjsKc7xR6NAUg',
 			authDomain: 'auth-9412a.firebaseapp.com',
@@ -14,13 +17,33 @@ class App extends Component {
 			storageBucket: 'auth-9412a.appspot.com',
 			messagingSenderId: '104719419245'
 		});
+		
+		firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+				this.setState({ loggedIn: true });
+			} else {
+				this.setState({ loggedIn: false });
+			}
+		});
+	}
+	
+	renderContent() {
+		if (this.state.loggedIn) {
+			return (
+				<Button>
+					Log out
+				</Button>
+			);
+		}
+		
+		return <LoginForm />;
 	}
 	
 	render() {
 		return (
 			<View>
 				<Header headerText="Authentication" />
-				<LoginForm />
+				{this.renderContent()}
 			</View>
 		);
 	}
