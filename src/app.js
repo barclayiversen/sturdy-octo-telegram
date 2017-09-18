@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import firebase from 'firebase';
-import { Header, Button } from './components/common';
+import { Header, Button, Spinner } from './components/common';
 import LoginForm from './components/LoginForm';
 
 class App extends Component {
 	state = { loggedIn: null };
 	
 	componentWillMount() {
-		console.log('dafawk: ',this.state.loggedIn)
+
 		firebase.initializeApp({
 			apiKey: 'AIzaSyBGZwfaxtctp1o1jHQFP5LjsKc7xR6NAUg',
 			authDomain: 'auth-9412a.firebaseapp.com',
@@ -28,6 +28,21 @@ class App extends Component {
 	}
 	
 	renderContent() {
+		
+		switch (this.state.loggedIn) {
+			case true:
+				return (
+					<Button onPress={() => firebase.auth().signOut()}> 
+						Log Out 
+					</Button>
+				);
+			case false:
+				return <LoginForm />;
+			default:
+				return (
+					<View><Spinner size="large" /></View>
+				);
+		}
 		if (this.state.loggedIn) {
 			return (
 				<Button>
@@ -36,7 +51,6 @@ class App extends Component {
 			);
 		}
 		
-		return <LoginForm />;
 	}
 	
 	render() {
@@ -48,5 +62,6 @@ class App extends Component {
 		);
 	}
 }
+
 
 export default App;
